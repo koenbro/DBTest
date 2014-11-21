@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">DbRefactor</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="button_add_project">Add project</string>
+    <string name="button_add_task">Add task</string>
+    <string name="button_send_data">Email db</string>
+    <string name="projects_list_title">Projects</string>
+    <string name="email_id">lvaszar@gmail.com</string>
+    <string name="emailed_file">DbRefactor.sqlite</string>
+
+</resources>
