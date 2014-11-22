@@ -27,21 +27,20 @@ import java.util.ArrayList;
  * documentation</a>,  the <a
  * href="https://docs.oracle.com/javase/tutorial/java/annotations/basics.html">annotations
  * basics</a> from Oracle, and the relevant <a href="http://stackoverflow.com/questions/tagged/javadoc">Stack Overflow tag</a>.
+ *
  * @author laszlo
  * @version 1.0
  */
 public class MainActivity extends Activity {
     private final String[] mProjects = {"journal article", "garage remodel", "taxes"};
     private final String[] mTasks = {"call contractor", "buy tools (yess!", "scour internet"};
-    private ProjectDBAdapter mProjectDBAdapter;
+    private ProjectCRUD mProjectCRUD;
     private ProjectAdapter projectAdapter;
-    private TaskDBAdapter mTaskDBAdapter;
+    private TaskCRUD mTaskCRUD;
     private DBAdapter mDBAdapter;
     private ListView projectListView;
     private String emailedFilename;
     private String EmailId;
-
-
 
 
     @Override
@@ -49,14 +48,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mDBAdapter = new DBAdapter(this);
-        try{
+        try {
             mDBAdapter.open();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         mDBAdapter.close();
-        mProjectDBAdapter = new ProjectDBAdapter(this);
-        mTaskDBAdapter = new TaskDBAdapter(this);
+        mProjectCRUD = new ProjectCRUD(this);
+        mTaskCRUD = new TaskCRUD(this);
         projectsAdapterLoad();
     }
 
@@ -64,13 +63,14 @@ public class MainActivity extends Activity {
      * reload the latest list to refresh screen
      */
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         projectsAdapterLoad();
     }
 
     /**
      * inflate the menu; this adds items to the action bar if it is present.
+     *
      * @param menu
      * @return true
      */
@@ -82,6 +82,7 @@ public class MainActivity extends Activity {
 
     /**
      * user choice on action menu
+     *
      * @param item
      * @return true
      */
@@ -95,7 +96,7 @@ public class MainActivity extends Activity {
                 return true;
             case R.id.action_add_task:
                 addTask();
-                Toast.makeText(MainActivity.this,"Task added", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Task added", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_send_data:
                 emailedFilename = getResources().getString(R.string.emailed_file);
@@ -112,19 +113,19 @@ public class MainActivity extends Activity {
      * add a randomly-generated project. Name is from {@code mProjects}
      */
     private void addProject() {
-        int i  = mProjects.length;
-        if (i==0) {
-            i=1;
+        int i = mProjects.length;
+        if (i == 0) {
+            i = 1;
         } else {
             i = (int) (Math.random() * i);
         }
         Project p = new Project();
         p.setName(mProjects[i]);
-        p.setCompleted((int)(Math.random()*100));
-        mProjectDBAdapter = new ProjectDBAdapter(this);
-        mProjectDBAdapter.open();
-        mProjectDBAdapter.addProject(p);
-        mProjectDBAdapter.close();
+        p.setCompleted((int) (Math.random() * 100));
+        mProjectCRUD = new ProjectCRUD(this);
+        mProjectCRUD.open();
+        mProjectCRUD.addRecord(p);
+        mProjectCRUD.close();
     }
 
     /**
@@ -133,21 +134,23 @@ public class MainActivity extends Activity {
      */
     private void projectsAdapterLoad() {
         projectAdapter = new ProjectAdapter(this, generateData());
-        projectListView = (ListView)findViewById(R.id.projectListView);
+        projectListView = (ListView) findViewById(R.id.projectListView);
         projectListView.setAdapter(projectAdapter);
     }
 
     /**
      * get a list of all projects
+     *
      * @return ArrayList of with objects of class {@code Project}
      */
     private ArrayList<Project> generateData() {
         ArrayList<Project> allProjects;
-        mProjectDBAdapter.open();
-        allProjects = mProjectDBAdapter.getAllProjects();
-        mProjectDBAdapter.close();
+        mProjectCRUD.open();
+        allProjects = mProjectCRUD.getAllRecords();
+        mProjectCRUD.close();
         return allProjects;
     }
+
     private void addTask() {
 
     }
@@ -155,6 +158,7 @@ public class MainActivity extends Activity {
     /**
      * export the database to a card, where it can be accessed directly for debugging. It can
      * also be emailed
+     *
      * @param databaseName a constant from {@code DBContract.DB_NAME}
      * @param backupDBPath name of file on disk; from {@code getResources().getString(R.string.emailed_file)}
      */
@@ -164,7 +168,7 @@ public class MainActivity extends Activity {
             File sd = Environment.getExternalStorageDirectory();
             File data = Environment.getDataDirectory();
             if (sd.canWrite()) {
-                String currentDBPath = "//data//"+getPackageName()+"//databases//"+databaseName+"";
+                String currentDBPath = "//data//" + getPackageName() + "//databases//" + databaseName + "";
                 File currentDB = new File(data, currentDBPath);
                 File backupDB = new File(sd, backupDBPath);
                 if (currentDB.exists()) {
@@ -175,13 +179,15 @@ public class MainActivity extends Activity {
                     dst.close();
                 }
             }
-        } catch (Exception e) {        }
+        } catch (Exception e) {
+        }
     }
 
 
     /**
      * method to email database. This is used to debug a database an a non-rooted device
-     * @param email address of recipient
+     *
+     * @param email      address of recipient
      * @param fileToSend file from storage (card) to send
      */
     private void sendEmail(String email, String fileToSend) {
@@ -191,7 +197,7 @@ public class MainActivity extends Activity {
         intent.setType("application/octet-stream");
         intent.putExtra(android.content.Intent.EXTRA_SUBJECT, emailedFilename + "_" +
                 timeStamp()[0] + "_" + timeStamp()[1]);
-        String to[] = { email };
+        String to[] = {email};
         intent.putExtra(Intent.EXTRA_EMAIL, to);
         intent.putExtra(Intent.EXTRA_TEXT, "Here is the db.");
         intent.putExtra(Intent.EXTRA_STREAM, path);
@@ -201,19 +207,19 @@ public class MainActivity extends Activity {
 
     /**
      * get a time stamp. This can have many uses, including for stamping an emailed db file
+     *
      * @return String[] with 2 elements: day and time
      */
-    private String[] timeStamp(){
+    private String[] timeStamp() {
         Time now = new Time(Time.getCurrentTimezone());
         now.setToNow();
-        String day =  now.year +"-"+(now.month+1)+"-"+now.monthDay;
+        String day = now.year + "-" + (now.month + 1) + "-" + now.monthDay;
         String time = now.format("%k:%M:%S");
         String[] timeStamp = new String[2];
         timeStamp[0] = day;
         timeStamp[1] = time;
         return (timeStamp);
     }
-
 
 
 }
