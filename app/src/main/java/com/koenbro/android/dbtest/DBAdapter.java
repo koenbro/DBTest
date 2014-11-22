@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-
 /**
  * Database adapter that uses an inner class to create (if needed) or upgrade the database. This is
  * inspired by the answer to
@@ -17,30 +16,34 @@ import android.util.Log;
  */
 public class DBAdapter {
     private DatabaseHelper DBHelper;
-    private SQLiteDatabase db;
+    SQLiteDatabase db;
 
     public DBAdapter(Context ctx) {
-        Context context = ctx;
-        this.DBHelper = new DatabaseHelper(context);
+        this.DBHelper = new DatabaseHelper(ctx);
     }
-
     /**
      * This inner class creates the database if it is not already available and manages the
      * upgrade should the schema change. Supposedly only runs once in the beginning, and then only
      * runs again when upgraded.
      */
-
     private static class DatabaseHelper extends SQLiteOpenHelper{
-
         DatabaseHelper(Context context){
             super(context, DBContract.DB_NAME, null, DBContract.DB_VERSION);
         }
         @Override
+        /**
+         * As new tables are added to the database, they need to be registered in this method, and the
+         * version number needs to be incremented in {@link com.koenbro.android.dbtest.DBContract}
+         */
         public void onCreate(SQLiteDatabase db){
             db.execSQL(DBContract.TableProject.CREATE_TABLE);
             db.execSQL(DBContract.TableTask.CREATE_TABLE);
         }
         @Override
+        /**
+         * As new tables are added to the database, they need to be registered in this method, and the
+         * version number needs to be incremented in {@link com.koenbro.android.dbtest.DBContract}
+         */
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
             Log.w(DatabaseHelper.class.getName(),
                     "Upgrading database from version " + oldVersion + " to "
@@ -50,6 +53,7 @@ public class DBAdapter {
             onCreate(db);
         }
     }
+
     public  DBAdapter open() throws SQLException{
         this.db = this.DBHelper.getWritableDatabase();
         return this;
@@ -57,9 +61,4 @@ public class DBAdapter {
     public void close(){
         this.DBHelper.close();
     }
-
-
-
 }
-
-
