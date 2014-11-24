@@ -1,30 +1,12 @@
 package com.koenbro.android.dbtest;
 
 /**
- * Data object Task
+ * Data object Task. Inherits {@code long id} and {@code String name} from DataObject.
  */
-public class Task {
-    private long id;
-    private String name;
+public class Task extends DataObject {
     private int taskProject;
 
     public Task() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getTaskProject() {

@@ -7,8 +7,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -57,6 +60,22 @@ public class MainActivity extends Activity {
         mProjectCRUD = new ProjectCRUD(this);
         mTaskCRUD = new TaskCRUD(this);
         projectsAdapterLoad();
+
+        projectListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Intent i = new Intent(MainActivity.this, TaskListActivity.class);
+                Log.d(DBContract.TableProject.TAG, String.valueOf(position));
+                ArrayList<Project> latestProjectList = generateData();
+                Project clickedProject = (Project) latestProjectList.get(position);
+                long intentId = clickedProject.getId();
+                i.putExtra(TaskListActivity.EXTRA_PROJECT_ID, intentId);
+                Toast.makeText(getApplicationContext(),
+                        "position:" + String.valueOf(position) + "; id:" + String.valueOf(intentId),
+                        Toast.LENGTH_SHORT).show();
+                startActivityForResult(i, 0);
+            }
+        });
     }
 
     /**
@@ -144,9 +163,8 @@ public class MainActivity extends Activity {
      * @return ArrayList of with objects of class {@code Project}
      */
     private ArrayList<Project> generateData() {
-        ArrayList<Project> allProjects;
         mProjectCRUD.open();
-        allProjects = mProjectCRUD.getAllRecords();
+        ArrayList<Project> allProjects = mProjectCRUD.getAllRecords();
         mProjectCRUD.close();
         return allProjects;
     }

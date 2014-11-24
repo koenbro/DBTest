@@ -8,7 +8,9 @@
     <string name="button_add_task">Add task</string>
     <string name="button_send_data">Email db</string>
     <string name="projects_list_title">Projects</string>
+    <string name="tasks_list_title">Tasks</string>
     <string name="email_id">lvaszar@gmail.com</string>
     <string name="emailed_file">DbRefactor.sqlite</string>
+    <string name="title_activity_task_list">TaskListActivity</string>
 
 </resources>

@@ -1,30 +1,12 @@
 package com.koenbro.android.dbtest;
 
 /**
- * Data object Project
+ * Data object Project. Inherits {@code long id} and {@code String name} from DataObject.
  */
-public class Project {
-    private long id;
-    private String name;
+public class Project extends DataObject {
     private int completed; // percent completed
 
     public Project() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getCompleted() {

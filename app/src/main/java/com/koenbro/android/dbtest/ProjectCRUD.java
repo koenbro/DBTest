@@ -30,8 +30,11 @@ public class ProjectCRUD extends DBAdapter {
                 null, // f. having
                 null, // g. order by
                 null); // h. limit
-        if (cursor != null) cursor.moveToFirst();
-        Project project = DBContract.TableProject.cursorToObject(cursor);
+        Project project;
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        project = DBContract.TableProject.cursorToObject(cursor);
         assert cursor != null;
         cursor.close();
         return (project);

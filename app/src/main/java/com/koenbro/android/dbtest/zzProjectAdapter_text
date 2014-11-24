@@ -55,18 +55,17 @@ class ProjectAdapter extends ArrayAdapter<Project> {
         return (rowView);
     }
 
-    public String labelText(int position) {
+    public String labelText(int position){
         return mProjectArrayList.get(position).getName();
     }
 
     /**
      * overload this method
-     *
      * @param position
      * @return
      */
-    public String valueText(int position) {
-        return "id: " + String.valueOf(mProjectArrayList.get(position).getId()) +
+    public String valueText(int position){
+        return "id: "+ String.valueOf(mProjectArrayList.get(position).getId()) +
                 "...% completed";
     }
 }
