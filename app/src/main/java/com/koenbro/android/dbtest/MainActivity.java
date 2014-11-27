@@ -129,25 +129,6 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * add a randomly-generated project. Name is from {@code mProjects}
-     */
-    private void addProject() {
-        int i = mProjects.length;
-        if (i == 0) {
-            i = 1;
-        } else {
-            i = (int) (Math.random() * i);
-        }
-        Project p = new Project();
-        p.setName(mProjects[i]);
-        p.setCompleted((int) (Math.random() * 100));
-        mProjectCRUD = new ProjectCRUD(this);
-        mProjectCRUD.open();
-        mProjectCRUD.addRecord(p);
-        mProjectCRUD.close();
-    }
-
-    /**
      * call {@code generateData} which returns an ArrayList of objects of class {@code Project} and
      * connect it to a {@code ListView}
      */
@@ -167,6 +148,25 @@ public class MainActivity extends Activity {
         ArrayList<Project> allProjects = mProjectCRUD.getAllRecords();
         mProjectCRUD.close();
         return allProjects;
+    }
+
+    /**
+     * add a randomly-generated project. Name is from {@code mProjects}
+     */
+    private void addProject() {
+        int i = mProjects.length;
+        if (i == 0) {
+            i = 1;
+        } else {
+            i = (int) (Math.random() * i);
+        }
+        Project p = new Project();
+        p.setName(mProjects[i]);
+        p.setCompleted((int) (Math.random() * 100));
+        mProjectCRUD = new ProjectCRUD(this);
+        mProjectCRUD.open();
+        mProjectCRUD.addRecord(p);
+        mProjectCRUD.close();
     }
 
     private void addTask() {
@@ -200,7 +200,6 @@ public class MainActivity extends Activity {
         } catch (Exception e) {
         }
     }
-
 
     /**
      * method to email database. This is used to debug a database an a non-rooted device
@@ -238,6 +237,4 @@ public class MainActivity extends Activity {
         timeStamp[1] = time;
         return (timeStamp);
     }
-
-
 }
